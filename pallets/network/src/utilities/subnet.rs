@@ -321,7 +321,7 @@ impl<T: Config> Pallet<T> {
     let min_price = MinRegistrationCost::<T>::get();
     let last_updated = LastRegistrationBlock::<T>::get();
     let decay_blocks = RegistrationCostDecayBlocks::<T>::get();
-    let alpha = RegistrationCostIncreaseAlpha::<T>::get();
+    let alpha = RegistrationCostAlpha::<T>::get();
 
     let delta_blocks = block.saturating_sub(last_updated);
 
@@ -352,9 +352,9 @@ impl<T: Config> Pallet<T> {
     decayed.max(min_price)
   }
 
-  pub fn update_last_registration_cost(cost: u128, block: u32) {
-    // TODO: Add cost increase logic
-    LastRegistrationCost::<T>::put(cost);
+  pub fn update_last_registration_cost(current_cost: u128, block: u32) {
+    let new_cost = Self::percent_mul(current_cost, NewRegistrationCostMultiplier::<T>::get());
+    LastRegistrationCost::<T>::put(new_cost);
     LastRegistrationBlock::<T>::put(block);
   }
 

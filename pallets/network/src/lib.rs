@@ -1931,14 +1931,23 @@ pub mod pallet {
 	pub type RegistrationCostDecayBlocks<T> = StorageValue<_, u32, ValueQuery, DefaultRegistrationCostDecayBlocks>;
 
 	#[pallet::type_value]
-	pub fn DefaultRegistrationCostIncreaseAlpha() -> u128 {
+	pub fn DefaultRegistrationCostAlpha() -> u128 {
 		// 50%
 		500000000000000000
 	}
 
 	#[pallet::storage]
-	pub type RegistrationCostIncreaseAlpha<T> = StorageValue<_, u128, ValueQuery, DefaultRegistrationCostIncreaseAlpha>;
+	pub type RegistrationCostAlpha<T> = StorageValue<_, u128, ValueQuery, DefaultRegistrationCostAlpha>;
 	
+	#[pallet::type_value]
+	pub fn DefaultNewRegistrationCostMultiplier() -> u128 {
+		// 200%
+		2000000000000000000
+	}
+
+	#[pallet::storage]
+	pub type NewRegistrationCostMultiplier<T> = StorageValue<_, u128, ValueQuery, DefaultNewRegistrationCostMultiplier>;
+
 	//
 	// Subnet reward slots
 	//

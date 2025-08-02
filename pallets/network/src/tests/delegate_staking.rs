@@ -1148,7 +1148,7 @@ fn test_switch_delegate_stake_node_to_subnet() {
     let stake_amount: u128 = NetworkMinStakeBalance::<Test>::get();
 
     let subnets = TotalActiveSubnets::<Test>::get() + 1;
-    log::error!("subnets count {:?}", subnets);
+
     build_activated_subnet_with_delegator_rewards(
       subnet_name.clone(), 
       0, 
@@ -1164,7 +1164,6 @@ fn test_switch_delegate_stake_node_to_subnet() {
     let to_subnet_name: Vec<u8> = "subnet-name-2".into();
 
     let subnets = TotalActiveSubnets::<Test>::get() + 1;
-    log::error!("subnets count {:?}", subnets);
 
     build_activated_subnet_with_delegator_rewards(
       to_subnet_name.clone(), 
