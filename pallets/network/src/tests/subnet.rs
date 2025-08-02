@@ -100,126 +100,126 @@ fn test_register_subnet() {
   })
 }
 
-#[test]
-fn test_register_subnet_subnet_registration_cooldown() {
-  new_test_ext().execute_with(|| {
-    let subnet_name: Vec<u8> = "subnet-name".into();
+// #[test]
+// fn test_register_subnet_subnet_registration_cooldown() {
+//   new_test_ext().execute_with(|| {
+//     let subnet_name: Vec<u8> = "subnet-name".into();
 
-    increase_epochs(1);
+//     increase_epochs(1);
 
-    let epoch_length = EpochLength::get();
-    let block_number = System::block_number();
-    let epoch = System::block_number().saturating_div(epoch_length);
+//     let epoch_length = EpochLength::get();
+//     let block_number = System::block_number();
+//     let epoch = System::block_number().saturating_div(epoch_length);
   
-    // let cost = Network::registration_cost(epoch);
-    let cost = Network::get_current_registration_cost(block_number);
+//     // let cost = Network::registration_cost(epoch);
+//     let cost = Network::get_current_registration_cost(block_number);
   
-    let _ = Balances::deposit_creating(&account(0), cost+1000);
+//     let _ = Balances::deposit_creating(&account(0), cost+1000);
   
-    let min_nodes = MinSubnetNodes::<Test>::get();
+//     let min_nodes = MinSubnetNodes::<Test>::get();
 
-    let start = 0;
-    let end = min_nodes + 1;
+//     let start = 0;
+//     let end = min_nodes + 1;
 
-    let subnets = TotalActiveSubnets::<Test>::get() + 1;
-    let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
-    let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
-      subnets,
-      max_subnet_nodes,
-      subnet_name.clone().into(),
-      start, 
-      end
-    );
+//     let subnets = TotalActiveSubnets::<Test>::get() + 1;
+//     let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
+//     let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
+//       subnets,
+//       max_subnet_nodes,
+//       subnet_name.clone().into(),
+//       start, 
+//       end
+//     );
   
   
-    let epoch_length = EpochLength::get();
-    let block_number = System::block_number();
-    let epoch = System::block_number().saturating_div(epoch_length);
-    let next_registration_epoch = Network::get_next_registration_epoch(epoch);
-    // increase_epochs(next_registration_epoch - epoch);
+//     let epoch_length = EpochLength::get();
+//     let block_number = System::block_number();
+//     let epoch = System::block_number().saturating_div(epoch_length);
+//     let next_registration_epoch = Network::get_next_registration_epoch(epoch);
+//     // increase_epochs(next_registration_epoch - epoch);
 
-    // --- Register subnet for activation
-    assert_ok!(
-      Network::register_subnet(
-        RuntimeOrigin::signed(account(0)),
-        account(1),
-        add_subnet_data,
-      )
-    );
+//     // --- Register subnet for activation
+//     assert_ok!(
+//       Network::register_subnet(
+//         RuntimeOrigin::signed(account(0)),
+//         account(1),
+//         add_subnet_data,
+//       )
+//     );
   
-    let subnet_id = SubnetName::<Test>::get(subnet_name.clone()).unwrap();
-    let subnet = SubnetsData::<Test>::get(subnet_id).unwrap();
+//     let subnet_id = SubnetName::<Test>::get(subnet_name.clone()).unwrap();
+//     let subnet = SubnetsData::<Test>::get(subnet_id).unwrap();
   
-    let subnet_name: Vec<u8> = "subnet-name-2".into();
+//     let subnet_name: Vec<u8> = "subnet-name-2".into();
 
-    let subnets = TotalActiveSubnets::<Test>::get() + 1;
-    let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
-    let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
-      subnets,
-      max_subnet_nodes,
-      subnet_name.clone().into(),
-      start, 
-      end
-    );
-  
-
-    assert_err!(
-      Network::register_subnet(
-        RuntimeOrigin::signed(account(0)),
-        account(2),
-        add_subnet_data.clone(),
-      ),
-      Error::<Test>::SubnetRegistrationCooldown
-    );
-
-    let epoch_length = EpochLength::get();
-    let block_number = System::block_number();
-    let epoch = System::block_number().saturating_div(epoch_length);
-    let next_registration_epoch = Network::get_next_registration_epoch(epoch);
-    increase_epochs(next_registration_epoch);
-
-    let epoch_length = EpochLength::get();
-    let block_number = System::block_number();
-    let epoch = System::block_number().saturating_div(epoch_length);
-  
-    // let cost = Network::registration_cost(epoch);
-    let cost = Network::get_current_registration_cost(block_number);
-  
-    let _ = Balances::deposit_creating(&account(0), cost+1000);
-
-    // --- Register after cooldown
-    assert_ok!(
-      Network::register_subnet(
-        RuntimeOrigin::signed(account(0)),
-        account(3),
-        add_subnet_data.clone(),
-      )
-    );
-
-    // --- Cooldown expected after registering again
-    let subnet_name: Vec<u8> = "subnet-name-3".into();
-
-    let subnets = TotalActiveSubnets::<Test>::get() + 1;
-    let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
-    let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
-      subnets,
-      max_subnet_nodes,
-      subnet_name.clone().into(),
-      start, 
-      end
-    );
+//     let subnets = TotalActiveSubnets::<Test>::get() + 1;
+//     let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
+//     let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
+//       subnets,
+//       max_subnet_nodes,
+//       subnet_name.clone().into(),
+//       start, 
+//       end
+//     );
   
 
-    assert_err!(
-      Network::register_subnet(
-        RuntimeOrigin::signed(account(1)),
-        account(4),
-        add_subnet_data.clone(),
-      ),
-      Error::<Test>::SubnetRegistrationCooldown
-    );
-  })
-}
+//     assert_err!(
+//       Network::register_subnet(
+//         RuntimeOrigin::signed(account(0)),
+//         account(2),
+//         add_subnet_data.clone(),
+//       ),
+//       Error::<Test>::SubnetRegistrationCooldown
+//     );
+
+//     let epoch_length = EpochLength::get();
+//     let block_number = System::block_number();
+//     let epoch = System::block_number().saturating_div(epoch_length);
+//     let next_registration_epoch = Network::get_next_registration_epoch(epoch);
+//     increase_epochs(next_registration_epoch);
+
+//     let epoch_length = EpochLength::get();
+//     let block_number = System::block_number();
+//     let epoch = System::block_number().saturating_div(epoch_length);
+  
+//     // let cost = Network::registration_cost(epoch);
+//     let cost = Network::get_current_registration_cost(block_number);
+  
+//     let _ = Balances::deposit_creating(&account(0), cost+1000);
+
+//     // --- Register after cooldown
+//     assert_ok!(
+//       Network::register_subnet(
+//         RuntimeOrigin::signed(account(0)),
+//         account(3),
+//         add_subnet_data.clone(),
+//       )
+//     );
+
+//     // --- Cooldown expected after registering again
+//     let subnet_name: Vec<u8> = "subnet-name-3".into();
+
+//     let subnets = TotalActiveSubnets::<Test>::get() + 1;
+//     let max_subnet_nodes = MaxSubnetNodes::<Test>::get();
+//     let add_subnet_data: RegistrationSubnetData<AccountId> = default_registration_subnet_data(
+//       subnets,
+//       max_subnet_nodes,
+//       subnet_name.clone().into(),
+//       start, 
+//       end
+//     );
+  
+
+//     assert_err!(
+//       Network::register_subnet(
+//         RuntimeOrigin::signed(account(1)),
+//         account(4),
+//         add_subnet_data.clone(),
+//       ),
+//       Error::<Test>::SubnetRegistrationCooldown
+//     );
+//   })
+// }
 
 #[test]
 fn test_register_subnet_exists_error() {

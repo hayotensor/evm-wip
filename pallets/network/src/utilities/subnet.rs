@@ -353,6 +353,7 @@ impl<T: Config> Pallet<T> {
   }
 
   pub fn update_last_registration_cost(cost: u128, block: u32) {
+    // TODO: Add cost increase logic
     LastRegistrationCost::<T>::put(cost);
     LastRegistrationBlock::<T>::put(block);
   }

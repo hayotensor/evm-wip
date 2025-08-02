@@ -5296,11 +5296,6 @@ pub mod pallet {
 			);
 
 			let epoch = Self::get_current_epoch_as_u32();
-
-			ensure!(
-				Self::can_subnet_register(epoch),
-				Error::<T>::SubnetRegistrationCooldown
-			);
 	
 			ensure!(
 				subnet_registration_data.churn_limit >= MinChurnLimit::<T>::get() &&
